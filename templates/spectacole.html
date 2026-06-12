@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<title>Spectacole</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="/spectacole">Stand-Up</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarMenu">
+      <ul class="navbar-nav ms-auto">
+
+{% if is_admin %}
+    <!-- ADMIN: doar logout -->
+    <li class="nav-item">
+        <a class="nav-link text-danger" href="/logout">Logout</a>
+    </li>
+{% else %}
+    <!-- CLIENT: meniu complet -->
+    <li class="nav-item"><a class="nav-link" href="/disponibile">Spectacole disponibile</a></li>
+    <li class="nav-item"><a class="nav-link" href="/top">Top spectacole</a></li>
+    <li class="nav-item"><a class="nav-link" href="/recomandari">Recomandări</a></li>
+    <li class="nav-item"><a class="nav-link" href="/biletele_mele">Biletele mele</a></li>
+    <li class="nav-item"><a class="nav-link text-danger" href="/logout">Logout</a></li>
+{% endif %}
+
+</ul>
+
+    </div>
+  </div>
+</nav>
+
+<!-- CONTINUT -->
+<div class="container mt-4">
+
+    <h2 class="mb-3">
+        {% if is_admin %}
+            Bine ai venit, <span class="text-danger">ADMIN</span>
+        {% else %}
+            Bine ai venit, {{ nume }}
+        {% endif %}
+    </h2>
+
+    <!-- BUTON ADMIN: ADAUGA SPECTACOL -->
+    {% if is_admin %}
+    <div class="mb-3">
+        <a href="{{ url_for('admin_add_spectacol') }}"
+           class="btn btn-success">
+            + Adaugă spectacol
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- SEARCH BAR SUS -->
+    <form method="GET" class="card p-3 mb-4">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">Dată minimă</label>
+                <input type="date" name="data"
+                       value="{{ request.args.get('data','') }}"
+                       class="form-control">
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Oraș</label>
+                <input type="text" name="oras"
+                       value="{{ request.args.get('oras','') }}"
+                       class="form-control"
+                       placeholder="ex: Cluj">
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Preț maxim</label>
+                <input type="number" name="pret"
+                       value="{{ request.args.get('pret','') }}"
+                       class="form-control">
+            </div>
+
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100">Caută</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- LISTA SPECTACOLE -->
+    <div class="row">
+        {% for s in spectacole %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card card-spectacol h-100 p-3">
+
+                <div class="d-flex justify-content-between align-items-start">
+                    <h5>
+                        <a href="{{ url_for('spectacol_detalii', spectacol_id=s.SpectacolID) }}"
+                           class="text-decoration-none text-dark">
+                           {{ s.Titlu }}
+                        </a>
+                    </h5>
+                    <span class="badge-pret">{{ s.PretBilet }} RON</span>
+                </div>
+
+                <div class="spectacol-meta mt-2">
+                    📅 {{ s.DataSpectacol }}<br>
+                    ⏰ {{ s.OraSpectacol.strftime('%H:%M') }}<br>
+                    📍 {{ s.NumeLocatie }}, {{ s.Oras }}
+                </div>
+
+                <!-- REZERVA (CLIENT + ADMIN) -->
+                {% if not is_admin %}
+<a href="{{ url_for('rezerva', spectacol_id=s.SpectacolID) }}"
+   class="btn btn-outline-primary mt-3 w-100">
+    Rezervă bilet
+</a>
+{% endif %}
+
+
+                <!-- BUTOANE ADMIN -->
+                {% if is_admin %}
+                <hr>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('admin_edit_spectacol', spectacol_id=s.SpectacolID) }}"
+                       class="btn btn-warning w-50">
+                        Modifică
+                    </a>
+
+                    <form method="POST"
+                          action="{{ url_for('admin_delete_spectacol', spectacol_id=s.SpectacolID) }}"
+                          onsubmit="return confirm('Sigur ștergi spectacolul?');"
+                          class="w-50">
+                        <button class="btn btn-danger w-100">
+                            Șterge
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

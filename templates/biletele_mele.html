@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<title>Biletele mele</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="/spectacole">Stand-Up</a>
+  </div>
+</nav>
+
+<div class="container mt-4">
+    <h3 class="mb-3">Biletele mele</h3>
+
+<div class="mb-3">
+    <a href="{{ url_for('profil') }}" class="btn btn-warning me-2">
+        ✏️ Modifică profil
+    </a>
+
+</div>
+
+<a href="/spectacole" class="btn btn-secondary mb-4">Înapoi la spectacole</a>
+
+    <div class="row">
+        {% for b in bilete %}
+        <div class="col-md-4 mb-4">
+            <div class="card card-spectacol p-3 h-100">
+
+                <h5>{{ b.Titlu }}</h5>
+
+                <div class="spectacol-meta mb-3">
+                    📅 {{ b.DataSpectacol }}<br>
+                    ⏰ {{ b.OraSpectacol.strftime('%H:%M') }}<br>
+                    📍 {{ b.NumeLocatie }}<br>
+                    🎟 {{ b.NrLocuri }} locuri<br>
+                    🔖 Tip: {{ b.Tip }}
+                </div>
+
+                <!-- BUTON ANULARE -->
+                <form method="POST"
+                      action="{{ url_for('anuleaza_bilet', bilet_id=b.BiletID) }}"
+                      onsubmit="return confirm('Sigur vrei să renunți la acest bilet?');">
+                    <button class="btn btn-outline-danger w-100">
+                        Renunță la bilet
+                    </button>
+                </form>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<title>Modifică spectacol</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="/spectacole">Stand-Up</a>
+  </div>
+</nav>
+
+<div class="container mt-4" style="max-width:600px;">
+    <h3 class="mb-4">Modifică spectacol</h3>
+
+    <form method="POST" class="card p-4">
+
+        <div class="mb-3">
+            <label class="form-label">Titlu</label>
+            <input type="text" class="form-control"
+                   value="{{ spectacol.Titlu }}" disabled>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Dată</label>
+            <input type="date" name="data"
+                   value="{{ spectacol.DataSpectacol }}"
+                   class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Oră</label>
+            <input type="time" name="ora"
+                   value="{{ spectacol.OraSpectacol.strftime('%H:%M') }}"
+                   class="form-control" required>
+        </div>
+        <div class="mb-3">
+    <label>Durata (minute)</label>
+    <input type="number"
+           name="durata"
+           class="form-control"
+           value="{{ spectacol.Durata }}"
+           min="30"
+           max="300"
+           required>
+</div>
+
+        <div class="mb-3">
+            <label class="form-label">Preț bilet (RON)</label>
+            <input type="number" name="pret"
+                   value="{{ spectacol.PretBilet }}"
+                   class="form-control" required>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button class="btn btn-warning w-50">
+                Salvează modificările
+            </button>
+            <a href="/spectacole" class="btn btn-secondary w-50">
+                Anulează
+            </a>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>

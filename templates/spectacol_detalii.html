@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<title>{{ spectacol.Titlu }}</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="/spectacole">Stand-Up</a>
+  </div>
+</nav>
+
+<div class="container mt-4">
+
+    <a href="/spectacole" class="btn btn-secondary mb-3">Înapoi</a>
+
+    <div class="card card-spectacol p-4 mx-auto" style="max-width: 700px;">
+        <h3 class="mb-3">{{ spectacol.Titlu }}</h3>
+
+        <div class="spectacol-meta mb-3">
+            📅 <strong>{{ spectacol.DataSpectacol }}</strong><br>
+            ⏰ <strong>{{ spectacol.OraSpectacol.strftime('%H:%M') }}</strong><br>
+            📍 <strong>{{ spectacol.NumeLocatie }}, {{ spectacol.Oras }}</strong><br>
+            💰 <strong>{{ spectacol.PretBilet }} RON</strong>
+        </div>
+
+        <hr>
+
+        <h5>Comedianți</h5>
+        {% if comediani %}
+        <ul>
+            {% for c in comediani %}
+            <li>{{ c.PrenumeComedian }} {{ c.NumeComedian }} – <em>{{ c.Stil }}</em></li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted">Nu sunt comedianți asociați.</p>
+        {% endif %}
+
+        <hr>
+
+        <a href="{{ url_for('rezerva', spectacol_id=spectacol.SpectacolID) }}"
+           class="btn btn-primary w-100">
+           Rezervă bilet
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>
